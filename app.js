@@ -1,36 +1,18 @@
-
-
-//var MongoClient = require('mongodb').MongoClient;
-
-//var uri="mongodb+srv://mirana:mirana@cluster0-qp2kf.mongodb.net/Poly?retryWrites=true"
-//var client = new MongoClient(uri, {useNewUrlParser: true});
-
-// Initialize connection
-
-//client.connect(function(err) {
-//    if(err) throw err;
-
-//    var dataSet = client.db("Poly").collection("Tasks").find({});
-
-//    dataSet.forEach(function(task){
-//        console.log(task.name + " | " + task.done);
-//    });
-//});
-
-
-//datalayer.init --> app.js
-// addTask puis datalayer.insertTask(task,function(){
-//    res.send({success : true});
-//}); --> app.js
-
-//datalayer
 var datalayer = require('./datalayer.js');
-
 
 const express = require('express');
 const app = express();
 const port = 3000;
 var bodyParser = require('body-parser');
+var session = require('express-session')
+
+
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true
+  }));
+
 
 app.use(bodyParser.json());                             // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({extended: true}));       // to support URL-encoded bodies
@@ -38,12 +20,14 @@ app.use(bodyParser.urlencoded({extended: true}));       // to support URL-encode
 app.use(express.static(__dirname + '/public'));
 datalayer.init(function(){
     console.log('init');
-    app.listen(3000);
-    console.log("Listening on port 3000");
+    app.listen(port);
+    console.log("Listening on port " + port);
 });
 
-app.get('/', function(req, res) {
-    res.sendFile('./public/index.html');
+app.get("/", function(req, res) {
+    res.sendFile('./public/login.html', { root: __dirname });
+//    console.log("On est à la racine");
+//    res.sendFile('./public/register.html');
 });
 
 //Send all tasks
@@ -53,20 +37,26 @@ app.get("/getTaskSet", function(req,res){
     });
 });
 
-app.put("/updateTaskName", function(req, res) {
-    var id = req.body.id;
+app.post("/getUserTaskSet", function(req,res){
+    var user = req.body.username;
+    datalayer.getTaskUser(user, function(dtSet){
+        res.send(dtSet);
+    });
+});
+
+app.post("/insertTask", function(req, res){
     var task = {
-        name : req.body.name
+        name : req.body.name,
+        done : false
     };
-    datalayer.updateTask(id, task,function(){
+    datalayer.insertTask(task,function(){
         datalayer.getTaskSet(function(dtSet){
             res.send(dtSet);
         });
-        //res.send({success : true, });
     });
- });
+});
 
-app.post("/insertTask", function(req, res){
+app.post("/addTask", function(req, res){
     var task = {
         name : req.body.name,
         done : false
@@ -87,18 +77,21 @@ app.put("/updateTaskDone/:liste_id", function(req, res) {
             datalayer.getTaskSet(function(dtSet){
                 res.send(dtSet);
             });
+        });
     });
-/* 
- //   var task = {
- //       done : (/^true$/i).test(req.body.done)
-//  };
-   // datalayer.updateTask(id, task,function(){
-//        datalayer.getTaskSet(function(dtSet){
- //           res.send(dtSet);
-   //     });
-        // res.send({success : true, }); */
+});
+
+app.put("/updateTaskName/:liste_id", function(req, res) {
+    var id = req.params.liste_id;
+    var task = {
+        name : req.body.name2
+    };
+      datalayer.updateTask(id, task,function(){
+            datalayer.getTaskSet(function(dtSet){
+                res.send(dtSet);
+            });
+        });
     });
- });
 
 app.delete("/deleteTask/:liste_id", function(req, res) {
     var id = req.params.liste_id;
@@ -115,7 +108,32 @@ app.delete("/deleteTask/:liste_id", function(req, res) {
         username : req.body.username,
         pwd : req.body.pwd
     };
-    datalayer.insertUser(user,function(){
-        res.send({success : true, });
+    datalayer.insertUser(user,function(result){
+        if(result==null)
+        {
+            console.log("Utilisateur déjà pris");
+            res.status(400).send({sucess : false});
+        }
+        else {
+            res.send({success : true });
+        }
+    });
+});
+
+app.post("/checkUser", function(req,res){
+    var user = {
+        username : req.body.username,
+        pwd : req.body.pwd
+    };
+    datalayer.checkUser(user,function(result){
+        if(result==null)
+            {
+                console.log("Can't match username and password");
+                res.status(400);
+                res.send({success : false});
+            }else{
+                console.log("You are now logged in");
+                res.send({success : true });
+            }
     });
 });

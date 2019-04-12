@@ -1,16 +1,3 @@
-//Application qui fonctionne format web (pas forcément joli...)
-//Déployer complètement sur le web (aws,heroku...)
-//Git
-//Création d'un compte utilisateur, connexion, déconnexion
-//Création, modification, supression d'une tache
-//Angular appelle serveur nodejs
-
-//mlab
-
-//Appels vers les structures de données partie business ne doit pas avoir de code par rapport à ça
-// Sait où et comment sont stockées les données
-
-
 var MongoClient = require('mongodb').MongoClient;
 var uri = "mongodb+srv://admin:XJLTt9DWFwK0kNLO@cluster0-ibauf.mongodb.net/test?retryWrites=true";
 var client = new MongoClient(uri, {useNewUrlParser:true });
@@ -25,28 +12,23 @@ var datalayer = {
             cb();
         });
     },
-
     getTaskSet : function(cb){
         db.collection("task").find({}).toArray(function(err, docs) {
             cb(docs);
         });
     },
-
     getOneTask : function(id,cb){
         ObjectID = require('mongodb').ObjectID;
+        //console.log("id= " + id);
         var ident = {
             _id : new ObjectID(id)
         };
+        //console.log(ident);
         db.collection("task").findOne(ident,function(err, task) {
             cb(task);
         });
     },
-    
     insertTask : function(task, cb){
-//        var task = {
- //           name : req.body.name,
- //           done : false
- //       };
         db.collection("task").insertOne(task, function() {
             cb();
         });
@@ -57,7 +39,6 @@ var datalayer = {
         var ident = {
             _id : new ObjectID(id)
         };
-        console.log(ident)
         db.collection("task").updateOne(ident, {$set: task}, function(err, result) {
         cb();
         });
@@ -68,7 +49,7 @@ var datalayer = {
         var ident = {
             _id : new ObjectID(id)
         };
-        console.log(ident)
+      //  console.log(ident)
         db.collection("task").deleteOne(ident, function(err, result) {
         cb();
         });
@@ -76,13 +57,41 @@ var datalayer = {
 
     insertUser: function(user,cb){
         db.collection("User").findOne({username: user.username},function(err,result){
-            if(result==null)
-                db.collection("User").insertOne(user, function() {
-                  cb();
+            if(result==null){
+//                console.log("Pas encore d'utilisateur avec ce nom");
+                db.collection("User").insertOne(user, function(err, utilisateur) {
+
+                    cb(utilisateur);
                 });
-            cb();
+            }else{
+//                console.log("utilisateur pris");
+                cb(null);
+            }
+//            cb();
         });
         
+    },
+    checkUser: function(user, cb){
+        db.collection("User").findOne({username: user.username, pwd: user.pwd},function(err,result){
+            if(result==null){
+                console.log("wrong username/password");
+                cb(null);
+            }else{
+              //  if(result.pwd==pwd) 
+                console.log("Hello " + result.username)
+                cb(result);
+//                else {
+ //                   console.log("Wrong password");
+  //                  cb(null);
+   //             }
+            }
+//          cb();
+        });  
+    },  
+    getTaskUser: function(user,cb){
+        db.collection("task").find({owner: user}).toArray(function(err, docs) {
+            cb(docs);
+        });
     }
 };
 

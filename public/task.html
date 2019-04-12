@@ -5,16 +5,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Liste des choses à faire</title>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
-        <script src="index.js"></script>
+        <script src="task.js"></script>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
    
 <style>
     .fait{
         text-decoration:line-through ;
     }
+    .modif{
+        text-decoration-color: aqua;
+        display: none;
+    }
 </style>   
     </head>
     <body ng-controller="mainController">
+        <div>
+            <button ng-click="deconnecter()">Déconnexion</button>
+        </div>
         <h1>La Liste des choses à faire</h1>
         <br/> Nombre de choses : {{laliste.length}}
         <div id="todo-form">
@@ -25,15 +32,24 @@
         </div>
         <div id="todo-list">
             <div ng-repeat="x in laliste">
-                <h5>                     
-                    <button ng-click="updateTodo(x._id)" class="btn btn-dark">c</button>
-                       <span ng-class="{'fait' : x.done }"> {{x.name}} ({{x.done}})</span>
+                <h5>   
+                    <form class="form-inline">                  
+                        <button ng-click="updateTodo(x._id)" class="btn btn-dark">c</button>
                         
-
-                    <button ng-click="deleteTodo(x._id)" class="btn btn-danger">x</button>
+                        <span ng-class="{'fait' : x.done }"> {{x.name}}  </span>
+                      <!--  <a href=# onclick="mafonction()" >   modifier </a> -->
+                        <div ng-class="{'modif': x.done}" >
+                            <button ng-click="mafonction()"> faire un changement </button>
+                            <input type="text" placeholder="Modifier la tache" ng-model="x.name2">
+                            <button type="submit" ng-click="changeTodo(x._id)" class="btn btn-dark">Modifier</button>
+                            <button ng-click="deleteTodo(x._id)" class="btn btn-danger">x</button>
+                       </div>
+                    </form>
                 </h5>
             </div>
         </div>
+
+
 
 
     </body>
