@@ -2,16 +2,18 @@ var datalayer = require('./datalayer.js');
 
 const express = require('express');
 const app = express();
-const port = 3000;
+
+var session = require('express-session');
+
+const port = process.env.PORT || 3000;
 var bodyParser = require('body-parser');
 var session = require('express-session')
 
-
-app.use(session({
+  app.use(session({
     secret: 'keyboard cat',
     resave: false,
-    saveUninitialized: true
-  }));
+    saveUninitialized: false,
+  }))
 
 
 app.use(bodyParser.json());                             // to support JSON-encoded bodies
@@ -25,6 +27,9 @@ datalayer.init(function(){
 });
 
 app.get("/", function(req, res) {
+    req.session.user = null;
+//    console.log("the user = " + req.session.user);
+
     res.sendFile('./public/login.html', { root: __dirname });
 //    console.log("On est à la racine");
 //    res.sendFile('./public/register.html');
@@ -32,13 +37,16 @@ app.get("/", function(req, res) {
 
 //Send all tasks
 app.get("/getTaskSet", function(req,res){
+    console.log(req.session.user);
     datalayer.getTaskSet(function(dtSet){
         res.send(dtSet);
     });
 });
 
 app.post("/getUserTaskSet", function(req,res){
-    var user = req.body.username;
+//    var user = req.body.username;
+//    console.log("the user connected is " + req.session.user);    
+    var user = req.session.user;
     datalayer.getTaskUser(user, function(dtSet){
         res.send(dtSet);
     });
@@ -47,10 +55,11 @@ app.post("/getUserTaskSet", function(req,res){
 app.post("/insertTask", function(req, res){
     var task = {
         name : req.body.name,
-        done : false
+        done : false,
+        owner : req.session.user
     };
     datalayer.insertTask(task,function(){
-        datalayer.getTaskSet(function(dtSet){
+        datalayer.getTaskUser(function(dtSet){
             res.send(dtSet);
         });
     });
@@ -62,7 +71,7 @@ app.post("/addTask", function(req, res){
         done : false
     };
     datalayer.insertTask(task,function(){
-        datalayer.getTaskSet(function(dtSet){
+        datalayer.getTaskUser(function(dtSet){
             res.send(dtSet);
         });
     });
@@ -74,7 +83,7 @@ app.put("/updateTaskDone/:liste_id", function(req, res) {
         if(task.done==true) task.done=false;
         else task.done=true;
         datalayer.updateTask(id, task,function(){
-            datalayer.getTaskSet(function(dtSet){
+            datalayer.getTaskUser(req.session.user, function(dtSet){
                 res.send(dtSet);
             });
         });
@@ -87,7 +96,7 @@ app.put("/updateTaskName/:liste_id", function(req, res) {
         name : req.body.name2
     };
       datalayer.updateTask(id, task,function(){
-            datalayer.getTaskSet(function(dtSet){
+            datalayer.getTaskUser(req.session.user, function(dtSet){
                 res.send(dtSet);
             });
         });
@@ -96,7 +105,7 @@ app.put("/updateTaskName/:liste_id", function(req, res) {
 app.delete("/deleteTask/:liste_id", function(req, res) {
     var id = req.params.liste_id;
     datalayer.deleteTask(id,function(){
-        datalayer.getTaskSet(function(dtSet){
+        datalayer.getTaskUser(function(dtSet){
             res.send(dtSet);
         });
     //    res.send({success : true, });
@@ -132,8 +141,18 @@ app.post("/checkUser", function(req,res){
                 res.status(400);
                 res.send({success : false});
             }else{
+                req.session.user = user.username;
                 console.log("You are now logged in");
                 res.send({success : true });
             }
     });
 });
+
+
+app.post("/getListAllTask", function(req,res){
+    var user = req.body.username;
+    datalayer.getListTask(user, function(liste){
+        console.log(liste);
+        res.send(liste);
+        });
+    });
