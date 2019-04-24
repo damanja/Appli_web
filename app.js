@@ -13,7 +13,7 @@ var session = require('express-session')
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: false,
-  }))
+  }));
 
 
 app.use(bodyParser.json());                             // to support JSON-encoded bodies
@@ -28,7 +28,7 @@ datalayer.init(function(){
 
 app.get("/", function(req, res) {
     req.session.user = null;
-//    console.log("the user = " + req.session.user);
+    console.log("the user = " + req.session.user);
 
     res.sendFile('./public/login.html', { root: __dirname });
 //    console.log("On est à la racine");
