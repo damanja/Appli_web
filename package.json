@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
+  "start" : "node app.js",
   "dependencies": {
     "express": "^4.16.4",
     "express-session": "^1.16.1",
