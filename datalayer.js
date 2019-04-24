@@ -17,6 +17,7 @@ var datalayer = {
             cb(docs);
         });
     },
+
     getOneTask : function(id,cb){
         ObjectID = require('mongodb').ObjectID;
         //console.log("id= " + id);
@@ -81,15 +82,21 @@ var datalayer = {
                 console.log("Hello " + result.username)
                 cb(result);
 //                else {
- //                   console.log("Wrong password");
-  //                  cb(null);
-   //             }
+//                   console.log("Wrong password");
+//                  cb(null);
+//             }
             }
 //          cb();
         });  
     },  
     getTaskUser: function(user,cb){
         db.collection("task").find({owner: user}).toArray(function(err, docs) {
+            cb(docs);
+        });
+    },    
+    
+    getListTask : function(cb){
+        db.collection("task").distinct("list", function(err,docs){
             cb(docs);
         });
     }

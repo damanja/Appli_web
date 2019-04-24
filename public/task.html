@@ -36,21 +36,16 @@
                     <form class="form-inline">                  
                         <button ng-click="updateTodo(x._id)" class="btn btn-dark">c</button>
                         
-                        <span ng-class="{'fait' : x.done }"> {{x.name}}  </span>
-                      <!--  <a href=# onclick="mafonction()" >   modifier </a> -->
-                        <div ng-class="{'modif': x.done}" >
-                            <button ng-click="mafonction()"> faire un changement </button>
-                            <input type="text" placeholder="Modifier la tache" ng-model="x.name2">
+                        <span ng-class="{'fait' : x.done }"> {{x.name}} </span>  
+                        <!--  <a href=# onclick="mafonction()" >   modifier </a> -->
+                        <div ng-class="{'modif': x.done}">
+                            <input type="text" placeholder="Modifier la tache" ng-model="changeData.name2">
                             <button type="submit" ng-click="changeTodo(x._id)" class="btn btn-dark">Modifier</button>
-                            <button ng-click="deleteTodo(x._id)" class="btn btn-danger">x</button>
-                       </div>
+                            <button ng-click="deleteTodo(x._id)" class="btn btn-danger"> x </button>
+                        </div>
                     </form>
                 </h5>
             </div>
         </div>
-
-
-
-
     </body>
 </html>

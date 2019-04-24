@@ -2,8 +2,8 @@ var ListeaFaire = angular.module('ListeaFaire', []);
 
 function mainController($scope, $http,$window) {
 	$scope.formData = {};
-	$scope.new = {};
-	$http.get('/getTaskSet').success(function(data) {
+	$scope.changeData = {};
+	$http.post('/getUserTaskSet').success(function(data) {
 		$scope.laliste = data;
 		console.log(data);
 	})
@@ -33,9 +33,9 @@ function mainController($scope, $http,$window) {
 	};
 	$scope.changeTodo = function(id) {
 
-		$http.put('/updateTaskName/'+id,$scope.laliste)
+		$http.put('/updateTaskName/'+id,$scope.changeData)
 		.success(function(data) {
-			$scope.laliste={};
+			$scope.changeData={};
 			$scope.laliste = data;
 			console.log(data);
 		})
@@ -60,8 +60,8 @@ function mainController($scope, $http,$window) {
 		/* TODO mis à jour de l'utilisateur */ 
 		$window.location.href = '/';
 	}
-
 	$scope.mafonction = function(){
+
 		alert("Je commence à comprendre des choses");
 	};
 }
