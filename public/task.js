@@ -6,23 +6,11 @@ function mainController($scope, $http,$window) {
 	$scope.changeData = {};
 	$http.post('/getUserTaskSet').success(function(data) {
 		$scope.laliste = data;
-/*		data.forEach(function(task, index){
-			console.log(task);
-		});*/
 		console.log(data);
 	})
 	.error(function(data) {
 		console.log('Error: ' + data);
 	});
-/*
-	$http.post('/').success(function(data) {
-		$scope.tache = data;
-		console.log(data);
-	})
-	.error(function(data) {
-		console.log('Error: ' + data);
-	});
-*/
 
 	$scope.createListTodo = function() {
 		$http.post('/insertListTask',$scope.formData)
@@ -94,8 +82,7 @@ function mainController($scope, $http,$window) {
 	};
 
 	$scope.deconnecter = function(){
-		alert("vous allez être déconnecté");
-		/* TODO mis à jour de l'utilisateur */ 
+		alert("vous allez être déconnecté"); 
 		$window.location.href = '/';
 	}
 
@@ -112,9 +99,4 @@ function mainController($scope, $http,$window) {
 		e.style.display = ((e.style.display!='none') ? 'none' : 'block');
 		a.style.display = ((e.style.display!='none') ? 'none' : 'block');
 	}
-
-	$scope.mafonction = function(){
-
-		alert("Je commence à comprendre des choses");
-	};
 }

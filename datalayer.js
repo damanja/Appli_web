@@ -20,11 +20,9 @@ var datalayer = {
 
     getOneTask : function(id,cb){
         ObjectID = require('mongodb').ObjectID;
-        //console.log("id= " + id);
         var ident = {
             _id : new ObjectID(id)
         };
-        //console.log(ident);
         db.collection("task").findOne(ident,function(err, task) {
             cb(task);
         });
@@ -50,7 +48,6 @@ var datalayer = {
         var ident = {
             _id : new ObjectID(id)
         };
-      //  console.log(ident)
         db.collection("task").deleteOne(ident, function(err, result) {
         cb();
         });
@@ -59,16 +56,13 @@ var datalayer = {
     insertUser: function(user,cb){
         db.collection("User").findOne({username: user.username},function(err,result){
             if(result==null){
-//                console.log("Pas encore d'utilisateur avec ce nom");
                 db.collection("User").insertOne(user, function(err, utilisateur) {
 
                     cb(utilisateur);
                 });
             }else{
-//                console.log("utilisateur pris");
                 cb(null);
             }
-//            cb();
         });
         
     },
@@ -78,15 +72,8 @@ var datalayer = {
                 console.log("wrong username/password");
                 cb(null);
             }else{
-              //  if(result.pwd==pwd) 
-                console.log("Hello " + result.username)
                 cb(result);
-//                else {
-//                   console.log("Wrong password");
-//                  cb(null);
-//             }
             }
-//          cb();
         });  
     },  
     getTaskUser: function(user,cb){
@@ -123,7 +110,6 @@ var datalayer = {
         var ident = {
             _id : new ObjectID(id)
         };
-        //console.log(ident);
         db.collection("listTask").findOne(ident,function(err, task) {
             cb(task);
         });
@@ -144,25 +130,6 @@ var datalayer = {
         });
     },
 
-    jointure: function(user, cb){
-        db.collection("listTask").aggregate([
-            {
-                $lookup:
-                {
-                    from: "task",
-                    localField: "name",
-                    foreignField: "list",
-                    as: "tache"
-                }
-            },{
-                $match:{
-                    "owner" : user
-                }
-            }
-        ]).toArray(function(err,docs){
-            cb(docs);
-        });
-    },
     getAllTask: function(user, cb){
         db.collection("listTask").aggregate([
             {

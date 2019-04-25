@@ -9,12 +9,11 @@ const port = process.env.PORT || 3000;
 var bodyParser = require('body-parser');
 var session = require('express-session')
 
-  app.use(session({
+app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: false,
-  }));
-
+}));
 
 app.use(bodyParser.json());                             // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({extended: true}));       // to support URL-encoded bodies
@@ -28,11 +27,7 @@ datalayer.init(function(){
 
 app.get("/", function(req, res) {
     req.session.user = null;
-    console.log("the user = " + req.session.user);
-
     res.sendFile('./public/login.html', { root: __dirname });
-//    console.log("On est à la racine");
-//    res.sendFile('./public/register.html');
 });
 
 //Send all tasks
@@ -42,16 +37,7 @@ app.get("/getTaskSet", function(req,res){
         res.send(dtSet);
     });
 });
-/*
-app.post("/getUserTaskSet", function(req,res){
-//    var user = req.body.username;
-//    console.log("the user connected is " + req.session.user);    
-    var user = req.session.user;
-    datalayer.getTaskUser(user, function(dtSet){
-        res.send(dtSet);
-    });
-});
-*/
+
 app.post("/insertTask/:name_list", function(req, res){
     var task = {
         name : req.body.name,
@@ -66,8 +52,6 @@ app.post("/insertTask/:name_list", function(req, res){
         });
     });
 });
-
-
 
 app.post("/addTask", function(req, res){
     var task = {

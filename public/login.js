@@ -7,9 +7,7 @@ function loginController($scope, $http, $window) {
         $http.post('/checkuser', $scope.formul)
         .success(function(){
             $scope.formul = {};
-//            console.log("Vous êtes connecté");
             $window.location.href = '/task.html';
-          //  console.log('Success on registering new user');
         })
         .error(function(){
             $scope.formul = {};

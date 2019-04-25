@@ -19,25 +19,27 @@
 </style>   
     </head>
     <body ng-controller="mainController">
-        <div>
-            <button ng-click="deconnecter()">Déconnexion</button>
-        </div>
-        <h1>La Liste des choses à faire</h1>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark d-flex ">
+                <span class="navbar-brand mb-0 h1 mr-auto p-2">To-Do list</span>
+                <button class="btn btn-outline-danger " ng-click="deconnecter()">Déconnexion</button>
+            </nav>
+
+        <h1 class="mt-5">La Liste des choses à faire</h1>
         <br/> Liste de choses à faire: {{laliste.length}}
         
         <div id="todo-form">
             <form class="form-inline">
                 <input type="text" placeholder="écrire quelque chose" ng-model="formData.name" class="form-control mb-2 mr-sm-2">
-                <button type="submit" ng-click="createListTodo()" class="btn btn-dark">Ajouter une nouvelle liste</button>
+                <button type="submit" ng-click="createListTodo()" class="btn btn-dark">Créer une nouvelle liste</button>
             </form>
         </div>
 
         <div class="mt-5 ml-3" id="todo-list">
             <div ng-repeat="liste in laliste">
                 <form class="form-inline" class=>
-                    <span class="h4">*{{liste.name}} </span>
+                    <span class="h4">-{{liste.name}} </span>
+                    <button class="ml-3" ng-click="deleteTodoList(liste._id)">Supprimer cette liste</button>
                     <button id="btnAddTask{{$index}}" ng-click="toggle_visibility($index)" class="ml-3">Ajouter une tâche</button>  
-                    <button ng-click="deleteTodoList(liste._id)">Supprimer cette liste</button>
                     <div id="addTaskForm{{$index}}" class="ml-5" style="display: none" >    
                         <input type="text" placeholder="écrire quelque chose" ng-model="formTask.name" class="form-control mb-2 mr-sm-2">
                         <button type="submit" ng-click="createTodo(liste.name)" class="btn btn-dark">Ajouter la tâche </button>
