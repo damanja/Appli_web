@@ -37,18 +37,18 @@
                 <form class="form-inline" class=>
                     <span class="h4">*{{liste.name}} </span>
                     <button id="btnAddTask{{$index}}" ng-click="toggle_visibility($index)" class="ml-3">Ajouter une tâche</button>  
+                    <button ng-click="deleteTodoList(liste._id)">Supprimer cette liste</button>
                     <div id="addTaskForm{{$index}}" class="ml-5" style="display: none" >    
                         <input type="text" placeholder="écrire quelque chose" ng-model="formTask.name" class="form-control mb-2 mr-sm-2">
                         <button type="submit" ng-click="createTodo(liste.name)" class="btn btn-dark">Ajouter la tâche </button>
                         <button ng-click="toggle_visibility($index)">Annuler</button>
                     </div>
                 </form>
-                <div class="ml-5" ng-repeat="x in liste.tache">
-                    <h5>   
-                        <form class="form-inline">                  
+                    <div class="list-group ml-5" ng-repeat="x in liste.tache">   
+                        <div  class="list-group-item">             
+                        <form class="form-inline">  
                             <button ng-click="updateTodo(x._id)" class="btn btn-dark">c</button>
                             <button ng-click="deleteTodo(x._id)" class="btn btn-danger"> x </button>
-                            
                             <span ng-class="{'fait' : x.done }"> {{x.name}} </span>
                             <!--  <a href=# onclick="mafonction()" >   modifier </a> -->
                             <button id= "btnModifyAsk{{x._id}}" ng-click="modifyVisibility(x._id)" class="ml-3">Modifier tâche</button>
@@ -57,9 +57,9 @@
                                 <button type = "submit" ng-click="changeTodo(x._id)" class="btn btn-dark">Modifier</button>
                                 <button ng-click="modifyVisibility(x._id)">Annuler</button>
                             </div>
-                        </form>
-                    </h5>  
-                </div>
+                            </form>
+                        </div>                    
+                    </div>
                 <br/><br/>
             </div>
         </div>

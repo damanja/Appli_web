@@ -58,7 +58,7 @@ function mainController($scope, $http,$window) {
 			console.log('Error: ' + data);
 		});
 	};
-	
+
 	$scope.changeTodo = function(id) {
 		$http.put('/updateTaskName/'+id,$scope.changeData)
 		.success(function(data) {
@@ -80,6 +80,17 @@ function mainController($scope, $http,$window) {
 			.error(function(data) {
 				console.log('Error: ' + data);
 			});
+	};
+
+	$scope.deleteTodoList = function(id){
+		$http.delete('/deleteListTask/'+id)
+			.success(function(data){
+				$scope.laliste = data;
+				console.log(data);
+			})
+			.error(function(data) {
+				console.log('Error: ' + data);
+			});	
 	};
 
 	$scope.deconnecter = function(){

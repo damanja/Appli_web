@@ -119,6 +119,22 @@ app.delete("/deleteTask/:liste_id", function(req, res) {
     });
  });
 
+app.delete("/deleteListTask/:id", function(req,res){
+    var id= req.params.id;
+    datalayer.getOneList(id,function(list){
+        var nameListe=list.name;
+        datalayer.deleteList(id, function(){ //on va supprimer la liste d'abord
+            datalayer.deleteTaskFromList(nameListe, function(){ //on supprime tous les taches a l'interieur
+                var user = req.session.user;
+                datalayer.getAllTask(user, function(dtSet){
+                    res.send(dtSet);
+                });
+            });
+        });
+    });
+
+});
+
  app.post("/createUser", function(req, res){
     var user = {
         username : req.body.username,
@@ -163,7 +179,6 @@ app.post("/getListAllTask", function(req,res){
     });
 });
 
-
 //chercher les taches a l'intérieur d'une liste
 app.post("/getTaskList", function(req,res){
     var user = req.session.user;
@@ -173,14 +188,12 @@ app.post("/getTaskList", function(req,res){
     });
 });
 
-
 app.post("/getUserTaskSet", function(req,res){
     var user = req.session.user;
     datalayer.getAllTask(user, function(data){
         res.send(data);
     });
 });
-
 
 app.post("/insertListTask", function(req,res){
     var list = {

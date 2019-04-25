@@ -44,7 +44,7 @@ var datalayer = {
         cb();
         });
     },
-
+   
     deleteTask : function(id, cb){
         ObjectID = require('mongodb').ObjectID;
         var ident = {
@@ -115,6 +115,31 @@ var datalayer = {
 
     insertList : function(list, cb){
         db.collection("listTask").insertOne(list, function() {
+            cb();
+        });
+    },
+    getOneList : function(id,cb){
+        ObjectID = require('mongodb').ObjectID;
+        var ident = {
+            _id : new ObjectID(id)
+        };
+        //console.log(ident);
+        db.collection("listTask").findOne(ident,function(err, task) {
+            cb(task);
+        });
+    },
+    deleteList: function(id, cb){
+        ObjectID = require('mongodb').ObjectID;
+        var ident = {
+            _id : new ObjectID(id)
+        };
+        db.collection("listTask").deleteOne(ident, function(err, result) {
+            
+            cb();
+        });
+    },
+    deleteTaskFromList: function(listName, cb){
+        db.collection("task").deleteMany({list: listName}, function(err,result){
             cb();
         });
     },
