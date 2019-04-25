@@ -95,8 +95,76 @@ var datalayer = {
         });
     },    
     
-    getListTask : function(cb){
+    getDifferentTask : function(cb){
         db.collection("task").distinct("list", function(err,docs){
+            cb(docs);
+        });
+    },
+
+    getListTask : function(user, cb){ //get list of task for a user
+        db.collection("listTask").find({owner: user}).toArray(function(err, docs){
+            cb(docs);
+        });
+    },
+
+    getTasks: function(user, liste,cb){
+        db.collection("task").find({owner:user, list: liste}).toArray(function(err,docs){
+            cb(docs);
+        });
+    },
+
+    insertList : function(list, cb){
+        db.collection("listTask").insertOne(list, function() {
+            cb();
+        });
+    },
+
+    jointure: function(user, cb){
+        db.collection("listTask").aggregate([
+            {
+                $lookup:
+                {
+                    from: "task",
+                    localField: "name",
+                    foreignField: "list",
+                    as: "tache"
+                }
+            },{
+                $match:{
+                    "owner" : user
+                }
+            }
+        ]).toArray(function(err,docs){
+            cb(docs);
+        });
+    },
+    getAllTask: function(user, cb){
+        db.collection("listTask").aggregate([
+            {
+                $lookup:
+                {
+                    from: "task",
+                    let: {nameliste: "$name", username: "$owner"},
+                    pipeline:[
+                        { $match:
+                            { $expr:
+                               { $and:
+                                  [
+                                    { $eq: [ "$list",  "$$nameliste" ] },
+                                    { $eq: [ "$owner", "$$username" ] }
+                                  ]
+                               }
+                            }
+                         }
+                    ],
+                    as: "tache"
+                }
+            },{
+                $match:{
+                    "owner" : user
+                }
+            }
+        ]).toArray(function(err,docs){
             cb(docs);
         });
     }

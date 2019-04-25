@@ -23,28 +23,44 @@
             <button ng-click="deconnecter()">Déconnexion</button>
         </div>
         <h1>La Liste des choses à faire</h1>
-        <br/> Nombre de choses : {{laliste.length}}
+        <br/> Liste de choses à faire: {{laliste.length}}
+        
         <div id="todo-form">
             <form class="form-inline">
                 <input type="text" placeholder="écrire quelque chose" ng-model="formData.name" class="form-control mb-2 mr-sm-2">
-                <button type="submit" ng-click="createTodo()" class="btn btn-dark">Ajouter</button>
+                <button type="submit" ng-click="createListTodo()" class="btn btn-dark">Ajouter une nouvelle liste</button>
             </form>
         </div>
-        <div id="todo-list">
-            <div ng-repeat="x in laliste">
-                <h5>   
-                    <form class="form-inline">                  
-                        <button ng-click="updateTodo(x._id)" class="btn btn-dark">c</button>
-                        
-                        <span ng-class="{'fait' : x.done }"> {{x.name}} </span>  
-                        <!--  <a href=# onclick="mafonction()" >   modifier </a> -->
-                        <div ng-class="{'modif': x.done}">
-                            <input type="text" placeholder="Modifier la tache" ng-model="changeData.name2">
-                            <button type="submit" ng-click="changeTodo(x._id)" class="btn btn-dark">Modifier</button>
+
+        <div class="mt-5 ml-3" id="todo-list">
+            <div ng-repeat="liste in laliste">
+                <form class="form-inline" class=>
+                    <span class="h4">*{{liste.name}} </span>
+                    <button id="btnAddTask{{$index}}" ng-click="toggle_visibility($index)" class="ml-3">Ajouter une tâche</button>  
+                    <div id="addTaskForm{{$index}}" class="ml-5" style="display: none" >    
+                        <input type="text" placeholder="écrire quelque chose" ng-model="formTask.name" class="form-control mb-2 mr-sm-2">
+                        <button type="submit" ng-click="createTodo(liste.name)" class="btn btn-dark">Ajouter la tâche </button>
+                        <button ng-click="toggle_visibility($index)">Annuler</button>
+                    </div>
+                </form>
+                <div class="ml-5" ng-repeat="x in liste.tache">
+                    <h5>   
+                        <form class="form-inline">                  
+                            <button ng-click="updateTodo(x._id)" class="btn btn-dark">c</button>
                             <button ng-click="deleteTodo(x._id)" class="btn btn-danger"> x </button>
-                        </div>
-                    </form>
-                </h5>
+                            
+                            <span ng-class="{'fait' : x.done }"> {{x.name}} </span>
+                            <!--  <a href=# onclick="mafonction()" >   modifier </a> -->
+                            <button id= "btnModifyAsk{{x._id}}" ng-click="modifyVisibility(x._id)" class="ml-3">Modifier tâche</button>
+                            <div id="modifyTaskForm{{x._id}}" ng-class="{'modif': x.done}" style="display: none; margin-left: 10px">
+                                <input type="text" placeholder="Modifier la tache" ng-model="changeData.name2">
+                                <button type = "submit" ng-click="changeTodo(x._id)" class="btn btn-dark">Modifier</button>
+                                <button ng-click="modifyVisibility(x._id)">Annuler</button>
+                            </div>
+                        </form>
+                    </h5>  
+                </div>
+                <br/><br/>
             </div>
         </div>
     </body>

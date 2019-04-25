@@ -42,7 +42,7 @@ app.get("/getTaskSet", function(req,res){
         res.send(dtSet);
     });
 });
-
+/*
 app.post("/getUserTaskSet", function(req,res){
 //    var user = req.body.username;
 //    console.log("the user connected is " + req.session.user);    
@@ -51,19 +51,23 @@ app.post("/getUserTaskSet", function(req,res){
         res.send(dtSet);
     });
 });
-
-app.post("/insertTask", function(req, res){
+*/
+app.post("/insertTask/:name_list", function(req, res){
     var task = {
         name : req.body.name,
         done : false,
+        list : req.params.name_list,
         owner : req.session.user
     };
     datalayer.insertTask(task,function(){
-        datalayer.getTaskUser(function(dtSet){
+        var user = req.session.user;
+        datalayer.getAllTask(user, function(dtSet){
             res.send(dtSet);
         });
     });
 });
+
+
 
 app.post("/addTask", function(req, res){
     var task = {
@@ -83,7 +87,8 @@ app.put("/updateTaskDone/:liste_id", function(req, res) {
         if(task.done==true) task.done=false;
         else task.done=true;
         datalayer.updateTask(id, task,function(){
-            datalayer.getTaskUser(req.session.user, function(dtSet){
+            var user = req.session.user;
+            datalayer.getAllTask(user, function(dtSet){
                 res.send(dtSet);
             });
         });
@@ -96,7 +101,8 @@ app.put("/updateTaskName/:liste_id", function(req, res) {
         name : req.body.name2
     };
       datalayer.updateTask(id, task,function(){
-            datalayer.getTaskUser(req.session.user, function(dtSet){
+            var user = req.session.user;
+            datalayer.getAllTask(user, function(dtSet){
                 res.send(dtSet);
             });
         });
@@ -105,7 +111,8 @@ app.put("/updateTaskName/:liste_id", function(req, res) {
 app.delete("/deleteTask/:liste_id", function(req, res) {
     var id = req.params.liste_id;
     datalayer.deleteTask(id,function(){
-        datalayer.getTaskUser(function(dtSet){
+        var user =req.session.user;
+        datalayer.getAllTask(user, function(dtSet){
             res.send(dtSet);
         });
     //    res.send({success : true, });
@@ -150,9 +157,40 @@ app.post("/checkUser", function(req,res){
 
 
 app.post("/getListAllTask", function(req,res){
-    var user = req.body.username;
+    var user =  req.session.user;
     datalayer.getListTask(user, function(liste){
-        console.log(liste);
         res.send(liste);
+    });
+});
+
+
+//chercher les taches a l'intérieur d'une liste
+app.post("/getTaskList", function(req,res){
+    var user = req.session.user;
+    var list = req.body.liste;
+    datalayer.getTasks(user, list,function(data){
+        res.send(data);
+    });
+});
+
+
+app.post("/getUserTaskSet", function(req,res){
+    var user = req.session.user;
+    datalayer.getAllTask(user, function(data){
+        res.send(data);
+    });
+});
+
+
+app.post("/insertListTask", function(req,res){
+    var list = {
+        name : req.body.name,
+        owner : req.session.user
+    };
+    datalayer.insertList(list,function(){
+        var user = req.session.user;
+        datalayer.getAllTask(user, function(dtSet){
+            res.send(dtSet);
         });
     });
+});
