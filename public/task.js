@@ -87,6 +87,7 @@ function mainController($scope, $http,$window) {
 	}
 
 	$scope.toggle_visibility = function(idx){
+		$scope.formTask = {};	
 		var e = document.getElementById("addTaskForm"+idx);
 		var a= document.getElementById("btnAddTask"+idx);
 		e.style.display = ((e.style.display!='none') ? 'none' : 'block');
@@ -94,6 +95,7 @@ function mainController($scope, $http,$window) {
 	} 
 
 	$scope.modifyVisibility = function(id){
+		$scope.changeData={};
 		var e = document.getElementById("modifyTaskForm" + id);
 		var a = document.getElementById("btnModifyAsk" + id);
 		e.style.display = ((e.style.display!='none') ? 'none' : 'block');
