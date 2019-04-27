@@ -32,7 +32,6 @@ app.get("/", function(req, res) {
 
 //Send all tasks
 app.get("/getTaskSet", function(req,res){
-    console.log(req.session.user);
     datalayer.getTaskSet(function(dtSet){
         res.send(dtSet);
     });
@@ -99,7 +98,6 @@ app.delete("/deleteTask/:liste_id", function(req, res) {
         datalayer.getAllTask(user, function(dtSet){
             res.send(dtSet);
         });
-    //    res.send({success : true, });
     });
  });
 
